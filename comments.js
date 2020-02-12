@@ -1,13 +1,8 @@
 const fs = require('fs');
 const utils = require('./utils.js');
 let articles = require('./articles.json');
-const log4js = require('log4js');
-
-const logger = log4js.getLogger();
-logger.level = 'debug';
 
 function comCreate(req, res, payload, cb) {
-  logger.debug("api/comments/create");
   const id = Date.now();
   const result = {id: id, articleId: payload.articleId, text:payload.text, date: Date.now(), author: payload.author};
   let found;
@@ -39,7 +34,6 @@ function comCreate(req, res, payload, cb) {
 module.exports.comCreate = comCreate;
 
 function comDelete(req, res, payload, cb) {
-  logger.debug("api/comments/delete");
   let foundArticle;
 
   for (var i = 0; i < articles.length; i++) {

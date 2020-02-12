@@ -2,6 +2,9 @@ const http = require('http');
 let articles = require('./articles.json');
 const ar = require('./articles.js');
 const com = require('./comments.js');
+const Logger = require('node-json-logger');
+const logger = new Logger();
+let logs = [];
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -13,7 +16,8 @@ const handlers = {
   '/api/articles/update': ar.arUpdate,
   '/api/articles/delete': ar.arDelete,
   '/api/comments/create': com.comCreate,
-  '/api/comments/delete': com.comDelete
+  '/api/comments/delete': com.comDelete,
+  '/api/logs': readLogs
 };
 
 const server = http.createServer((req, res) => {
@@ -26,12 +30,17 @@ const server = http.createServer((req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.end( JSON.stringify(err) );
 
+        logger.info(req.url);
+        logs.push({datetime: new Date(Date.now()).toString(), url: req.url, status: res.statusCode});
+
         return;
       }
 
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
       res.end( JSON.stringify(result) );
+      logger.info(req.url);
+      logs.push({datetime: new Date(Date.now()).toString(), url: req.url, status: res.statusCode});
     });
   });
 });
@@ -60,4 +69,8 @@ function parseBodyJson(req, cb) {
 
     cb(null, params);
   });
+}
+
+function readLogs(req, res, payload, cb) {
+  cb(null, logs);
 }
