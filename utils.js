@@ -31,9 +31,17 @@ function sliceArray(array, limit, page){
   return result.slice((page - 1) * limit, page * limit);
 }
 
-function modifyArray(array, field = 'date', order = "DESC", limit = 10, page = 1){
-  let result = sortArray(array, field, order);
+function modifyArray(array, field = 'date', order = "DESC", limit = 10, page = 1, includeDeps = false){
+  let result = array;
   let pages = 0;
+
+  if (includeDeps === false){
+    for (var i = 0; i < result.length; i++) {
+      result[i].comments = [];
+    }
+  }
+
+  result = sortArray(result, field, order);
   result = sliceArray(result, limit, page);
 
   if (array.length >= limit && (array.length % limit) == 0){
