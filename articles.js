@@ -8,7 +8,7 @@ logger.level = 'debug';
 
 function arReadAll(req, res, payload, cb) {
   logger.debug("api/articles/readAll");
-  cb(null, articles);
+  cb(null, utils.modifyArray(articles, payload.sortField, payload.sortOrder, payload.limit, payload.page) );
 }
 
 module.exports.arReadAll = arReadAll
